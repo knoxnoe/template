@@ -1,0 +1,37 @@
+{
+  "name": "@froth/cli",
+  "version": "0.0.1",
+  "dependencies": {
+    "@swc/helpers": "~0.5.11"
+  },
+  "type": "commonjs",
+  "main": "./dist/src/index.js",
+  "typings": "./dist/src/index.d.ts",
+  "private": true,
+  "nx": {
+    "sourceRoot": "packages/cli/src",
+    "targets": {
+      "build": {
+        "executor": "@nx/js:swc",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "options": {
+          "outputPath": "packages/cli/dist",
+          "main": "packages/cli/src/index.ts",
+          "tsConfig": "packages/cli/tsconfig.lib.json"
+        }
+      },
+      "test": {
+        "executor": "@nx/vite:test",
+        "outputs": [
+          "{options.reportsDirectory}"
+        ],
+        "options": {
+          "reportsDirectory": "../../coverage/packages/cli"
+        }
+      }
+    },
+    "name": "cli"
+  }
+}
