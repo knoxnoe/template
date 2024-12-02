@@ -4,3 +4,5 @@ vite.config.*.timestamp*
 
 # nx
 .nx
+
+dist

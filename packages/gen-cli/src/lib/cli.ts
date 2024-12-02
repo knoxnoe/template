@@ -1,16 +1,11 @@
 import { cac } from 'cac';
 import inquirer from 'inquirer';
+import path from 'path';
+import { TemplateManager } from './template-manager';
 
 const cli = cac('gen');
+const templateManager = new TemplateManager();
 
-// 定义生成模板的类型
-type TemplateType = 'component' | 'page' | 'hook';
-
-interface TemplateOptions {
-  name: string;
-  type: TemplateType;
-  path: string;
-}
 
 export async function runCLI() {
   // 设置版本号
@@ -19,20 +14,23 @@ export async function runCLI() {
 
   // 添加generate命令
   cli
-    .command('generate', 'Generate a new template')
+    .command('generate [name]', 'Generate a new template')
     .alias('g')
-    .action(async () => {
+    .action(async (name?: string) => {
+      const availableTemplates = templateManager.getAvailableTemplates();
+      
       const answers = await inquirer.prompt([
         {
           type: 'list',
           name: 'type',
           message: 'What do you want to generate?',
-          choices: ['component', 'page', 'hook']
+          choices: availableTemplates
         },
         {
           type: 'input',
           name: 'name',
           message: 'Enter the name:',
+          default: name,
           validate: (input: string) => {
             if (!input.trim()) {
               return 'Name is required';
@@ -43,20 +41,25 @@ export async function runCLI() {
         {
           type: 'input',
           name: 'path',
-          message: 'Enter the path (press enter for current directory):',
+          message: 'Enter the target directory (press enter for current directory):',
           default: '.'
         }
       ]);
 
-      await generateTemplate(answers as TemplateOptions);
+      const targetPath = path.resolve(process.cwd(), answers.path);
+      
+      try {
+        await templateManager.generateFile({
+          type: answers.type,
+          name: answers.name,
+          targetPath
+        });
+        console.log('✨ Template generated successfully!');
+      } catch (error) {
+        console.error('Error generating template:', error);
+      }
     });
 
   // 解析命令行参数
   cli.parse();
-}
-
-async function generateTemplate(options: TemplateOptions) {
-  console.log('Generating template with options:', options);
-  // TODO: 实现具体的模板生成逻辑
-  // 这里将根据不同的模板类型生成对应的代码
 }
