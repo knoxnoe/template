@@ -7,6 +7,9 @@
     "inquirer": "^8.2.6",
     "@types/inquirer": "^8.2.10"
   },
+  "scripts": {
+    "copy-templates": "cp -r templates dist/"
+  },
   "bin": {
     "gen": "./dist/src/index.js"
   },

@@ -1,11 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "baseUrl": ".",
+    "module": "NodeNext",
     "outDir": "dist",
-    "rootDir": ".",
-    "emitDeclarationOnly": false,
     "declaration": true,
     "types": ["node"]
   },
@@ -27,3 +25,4 @@
     "src/**/*.spec.jsx"
   ]
 }
+

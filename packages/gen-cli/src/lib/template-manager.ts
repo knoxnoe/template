@@ -5,8 +5,8 @@ export class TemplateManager {
   private templatesDir: string;
 
   constructor() {
-    // 获取templates目录的绝对路径（在包根目录下）
-    this.templatesDir = path.join(__dirname, '../../templates');
+    // 获取templates目录的绝对路径（在dist目录下）
+    this.templatesDir = path.join(__dirname, '../../../dist/templates');
   }
 
   /**
