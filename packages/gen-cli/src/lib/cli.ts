@@ -6,6 +6,14 @@ import { TemplateManager } from './template-manager';
 const cli = cac('gen');
 const templateManager = new TemplateManager();
 
+// 定义生成模板的类型
+type TemplateType = 'component' | 'page' | 'hook' | 'license';
+
+interface TemplateOptions {
+  name: string;
+  type: TemplateType;
+  path: string;
+}
 
 export async function runCLI() {
   // 设置版本号
@@ -36,6 +44,19 @@ export async function runCLI() {
               return 'Name is required';
             }
             return true;
+          },
+          when: (answers) => answers.type !== 'license'
+        },
+        {
+          type: 'input',
+          name: 'author',
+          message: 'Enter the author name:',
+          when: (answers) => answers.type === 'license',
+          validate: (input: string) => {
+            if (!input.trim()) {
+              return 'Author name is required';
+            }
+            return true;
           }
         },
         {
@@ -49,11 +70,23 @@ export async function runCLI() {
       const targetPath = path.resolve(process.cwd(), answers.path);
       
       try {
-        await templateManager.generateFile({
-          type: answers.type,
-          name: answers.name,
-          targetPath
-        });
+        if (answers.type === 'license') {
+          await templateManager.generateFile({
+            type: answers.type,
+            name: 'LICENSE',
+            targetPath,
+            variables: {
+              author: answers.author,
+              year: new Date().getFullYear().toString()
+            }
+          });
+        } else {
+          await templateManager.generateFile({
+            type: answers.type,
+            name: answers.name,
+            targetPath
+          });
+        }
         console.log('✨ Template generated successfully!');
       } catch (error) {
         console.error('Error generating template:', error);
